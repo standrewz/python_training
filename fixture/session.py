@@ -20,7 +20,6 @@ class SessionHelper:
     def logout(self):
         print("TRY TO LOGOUT")
         wd = self.app.wd
-        #self.app.return_to_home_page()
         wd.find_element_by_link_text("Logout").click()
         # Let logout finish successfully
         time.sleep(1)
