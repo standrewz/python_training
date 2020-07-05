@@ -1,4 +1,5 @@
 from selenium.webdriver.support.select import Select
+import time
 
 class ContactHelper:
 
@@ -7,25 +8,31 @@ class ContactHelper:
 
     def create_new_address_book_entry(self, contact):
         wd = self.app.wd
+        self.open_address_creation_page()
         # fill new address book form
         self.fill_contact_form(contact)
         # enter new contact
         wd.find_element_by_xpath("//input[21]").click()
 
-    def open_address_book_entry_page(self):
+    def open_address_creation_page(self):
         wd = self.app.wd
-        wd.find_element_by_link_text("add new").click()
+        if not (wd.current_url.endswith("/edit.php") and len(wd.find_elements_by_name("submit")) > 0):
+            wd.find_element_by_link_text("add new").click()
 
     def delete_first_contact(self):
         wd = self.app.wd
+        self.app.return_to_home_page()
         # Select first contact
         wd.find_element_by_name("selected[]").click()
         # Submit delete
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept()
+        # Let alert be closed correctly
+        time.sleep(1)
 
     def edit_first_contact(self, contact):
         wd = self.app.wd
+        self.app.return_to_home_page()
         wd.find_element_by_xpath("//table[@id='maintable']/tbody/tr[2]/td[8]/a/img").click()
         self.fill_contact_form(contact)
         # Submit edit

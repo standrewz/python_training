@@ -7,7 +7,6 @@ class Application:
 
     def __init__(self):
         self.wd = webdriver.Firefox()
-        self.wd.implicitly_wait(5)
         self.session = SessionHelper(self)
         self.group = GroupHelper(self)
         self.contact = ContactHelper(self)
@@ -25,7 +24,8 @@ class Application:
 
     def return_to_home_page(self):
         wd = self.wd
-        wd.find_element_by_link_text("home").click()
+        if not (wd.current_url == "http://localhost/addressbook/" and len(wd.find_elements_by_xpath("//input[@value='Send e-Mail']")) > 0):
+            wd.find_element_by_link_text("home").click()
 
     def destroy(self):
         self.wd.quit()
