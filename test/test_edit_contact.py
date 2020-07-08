@@ -2,6 +2,7 @@
 from model.contact import Contact
 
 def test_edit_first_group(app):
+    app.return_to_home_page()
     if app.contact.count() == 0:
         app.contact.open_address_creation_page()
         app.contact.create_new_address_book_entry(Contact(last_name="Kolosov", first_name="Petr", middle_name="Sergeevich", nickname="petrucho", company="Ololo",
