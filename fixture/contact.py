@@ -1,5 +1,6 @@
 from selenium.webdriver.support.select import Select
 import time
+from model.contact import Contact
 
 class ContactHelper:
 
@@ -77,3 +78,17 @@ class ContactHelper:
     def count(self):
         wd = self.app.wd
         return len(wd.find_elements_by_name("selected[]"))
+
+    def get_contact_list(self):
+        wd = self.app.wd
+        self.app.return_to_home_page()
+        contacts = []
+        contact_rows = wd.find_elements_by_css_selector("tr[name=entry]")
+        contact_size = len(contact_rows)
+        for i_row in range(1, contact_size+1):
+            base_xpath = "//table[@id='maintable']/tbody/tr[" + str(i_row+1) + "]/"
+            contact_id = wd.find_element_by_xpath(base_xpath + "td[1]/input").get_attribute("id")
+            last_name = wd.find_element_by_xpath(base_xpath + "td[2]").text
+            first_name = wd.find_element_by_xpath(base_xpath + "td[3]").text
+            contacts.append(Contact(id=contact_id, last_name=last_name, first_name=first_name))
+        return contacts

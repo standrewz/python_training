@@ -9,6 +9,13 @@ def test_edit_first_group(app):
                                            address="St.Petersburg, Moskovskii pr., 100", birthday_day="3", email="Kolosov@mail.ru", mobile="89764563429",
                                            birthday_month="June", birthday_year="2000"))
         app.return_to_home_page()
-    app.contact.edit_first_contact(Contact(last_name="New Kolosov", first_name="New Petr", middle_name="New Sergeevich", nickname="New petrucho", company="New Ololo",
+    old_contacts = app.contact.get_contact_list()
+    contact = Contact(last_name="New Kolosov", first_name="New Petr", middle_name="New Sergeevich", nickname="New petrucho", company="New Ololo",
                                            address="New St.Petersburg, Moskovskii pr., 100", birthday_day="13", email="New_Kolosov@mail.ru", mobile="99989764563429",
-                                           birthday_month="April", birthday_year="2010"))
+                                           birthday_month="April", birthday_year="2010")
+    contact.id = old_contacts[0].id
+    app.contact.edit_first_contact(contact)
+    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) == len(new_contacts)
+    old_contacts[0] = contact
+    assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
