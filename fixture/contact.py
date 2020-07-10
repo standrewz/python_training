@@ -21,11 +21,11 @@ class ContactHelper:
         if not (wd.current_url.endswith("/edit.php") and len(wd.find_elements_by_name("submit")) > 0):
             wd.find_element_by_link_text("add new").click()
 
-    def delete_first_contact(self):
+    def delete_contact_by_index(self, index):
         wd = self.app.wd
         self.app.return_to_home_page()
-        # Select first contact
-        wd.find_element_by_name("selected[]").click()
+        # Select contact by index
+        wd.find_elements_by_name("selected[]")[index].click()
         # Submit delete
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept()
@@ -34,15 +34,21 @@ class ContactHelper:
         self.app.return_to_home_page()
         self.contact_cache = None
 
-    def edit_first_contact(self, contact):
+    def delete_first_contact(self):
+        self.delete_contact_by_index(self, 0)
+
+    def edit_contact_by_index(self, index, contact):
         wd = self.app.wd
         self.app.return_to_home_page()
-        wd.find_element_by_xpath("//table[@id='maintable']/tbody/tr[2]/td[8]/a/img").click()
+        wd.find_element_by_xpath("//table[@id='maintable']/tbody/tr[" + str(index+2) + "]/td[8]/a/img").click()
         self.fill_contact_form(contact)
         # Submit edit
         wd.find_element_by_name("update").click()
         self.app.return_to_home_page()
         self.contact_cache = None
+
+    def edit_first_contact(self, contact):
+        self.edit_contact_by_index(0, contact)
 
     def fill_contact_form(self, contact):
         wd = self.app.wd
