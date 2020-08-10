@@ -129,16 +129,15 @@ class ContactHelper:
         cell = row.find_elements_by_tag_name("td")[7]
         cell.find_element_by_tag_name("a").click()
 
-    def open_contact_view_by_index(self, index):
+    def open_contact_to_view_by_index(self, index):
         wd = self.app.wd
         self.app.return_to_home_page()
         row = wd.find_elements_by_name("entry")[index]
         cell = row.find_elements_by_tag_name("td")[6]
         cell.find_element_by_tag_name("a").click()
 
-    def get_contact_info_from_edit_page(self, index):
+    def get_contact_info_from_edit_page(self):
         wd = self.app.wd
-        self.open_contact_to_edit_by_index(index)
         firstname = wd.find_element_by_name("firstname").get_attribute("value")
         lastname = wd.find_element_by_name("lastname").get_attribute("value")
         id = wd.find_element_by_name("id").get_attribute("value")
@@ -153,14 +152,29 @@ class ContactHelper:
         return Contact(firstname=firstname, lastname=lastname, id=id, homephone=homephone, workphone=workphone,
                        mobile=mobile, secondaryphone=secondaryphone, address=address, email=email, email2=email2, email3=email3)
 
-    def get_contact_info_from_view_page(self, index):
+    def get_contact_info_from_view_page(self):
         wd = self.app.wd
-        self.open_contact_view_by_index(index)
         text = wd.find_element_by_id("content").text
-        homephone = re.search("H: (.*)", text).group(1)
-        workphone = re.search("W: (.*)", text).group(1)
-        mobile = re.search("M: (.*)", text).group(1)
-        secondaryphone = re.search("P: (.*)", text).group(1)
+        homephone = re.search("H: (.*)", text)
+        if homephone is not None:
+            homephone = homephone.group(1)
+        else:
+            homephone = ''
+        workphone = re.search("W: (.*)", text)
+        if workphone is not None:
+            workphone = workphone.group(1)
+        else:
+            workphone = ''
+        mobile = re.search("M: (.*)", text)
+        if mobile is not None:
+            mobile = mobile.group(1)
+        else:
+            mobile = ''
+        secondaryphone = re.search("P: (.*)", text)
+        if secondaryphone is not None:
+            secondaryphone = secondaryphone.group(1)
+        else:
+            secondaryphone = ''
         return Contact(homephone=homephone, workphone=workphone,
                        mobile=mobile, secondaryphone=secondaryphone)
 
@@ -190,6 +204,11 @@ class ContactHelper:
         wd = self.app.wd
         self.app.return_to_home_page()
         wd.find_element_by_css_selector("a[href='edit.php?id=%s']" % id).click()
+
+    def open_contact_to_view_by_id(self, id):
+        wd = self.app.wd
+        self.app.return_to_home_page()
+        wd.find_element_by_css_selector("a[href='view.php?id=%s']" % id).click()
 
 
 
