@@ -191,6 +191,12 @@ class ContactHelper:
         self.app.return_to_home_page()
         self.contact_cache = None
 
+    def select_contact_in_list_by_id(self, id):
+        wd = self.app.wd
+        self.app.return_to_home_page()
+        # Select contact by id
+        wd.find_element_by_css_selector("input[value='%s']" % id).click()
+
     def edit_contact_by_id(self, id, contact):
         wd = self.app.wd
         self.open_contact_to_edit_by_id(id)
@@ -210,7 +216,26 @@ class ContactHelper:
         self.app.return_to_home_page()
         wd.find_element_by_css_selector("a[href='view.php?id=%s']" % id).click()
 
+    def add_contact_to_group(self, contact, group):
+        wd = self.app.wd
+        self.app.return_to_home_page()
+        # Select contact in list
+        self.select_contact_in_list_by_id(contact.id)
+        # Add selected contact to group
+        wd.find_element_by_name("to_group").click()
+        wd.find_element_by_xpath("(//option[@value='" + str(group.id) + "'])[2]").click()
+        wd.find_element_by_xpath("//input[@value='Add to']").click()
 
+    def remove_contact_from_group(self, contact, group):
+        wd = self.app.wd
+        self.app.return_to_home_page()
+        # Add selected contact to group
+        wd.find_element_by_name("group").click()
+        wd.find_element_by_xpath("//option[@value='" + str(group.id) + "']").click()
+        # Select contact in list
+        self.select_contact_in_list_by_id(contact.id)
+        # Press button to remove contact
+        wd.find_element_by_name("remove").click()
 
 
 
